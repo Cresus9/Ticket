@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global styles */
+:root {
+  --primary: #4f46e5;
+  --primary-dark: #4338ca;
+}
+
+body {
+  @apply antialiased text-gray-900;
+}
+
+/* Custom utility classes */
+.btn {
+  @apply px-4 py-2 rounded-lg font-medium transition-colors;
+}
+
+.btn-primary {
+  @apply bg-indigo-600 text-white hover:bg-indigo-700;
+}
+
+.btn-secondary {
+  @apply bg-white text-gray-700 border border-gray-200 hover:bg-gray-50;
+}

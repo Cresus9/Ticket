@@ -1,0 +1,220 @@
+// This is your Prisma schema file
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  password      String
+  name          String
+  phone         String?
+  location      String?
+  bio          String?
+  role          Role      @default(USER)
+  status        UserStatus @default(ACTIVE)
+  isOnline      Boolean   @default(false)
+  lastSeen      DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  orders        Order[]
+  tickets       Ticket[]
+  notifications Notification[]
+  preferences   NotificationPreference?
+  pushTokens    PushToken[]
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  BANNED
+}
+
+model Event {
+  id          String    @id @default(uuid())
+  title       String
+  description String
+  date        DateTime
+  time        String
+  location    String
+  imageUrl    String
+  price       Float
+  currency    String
+  capacity    Int
+  ticketsSold Int       @default(0)
+  status      EventStatus @default(DRAFT)
+  featured    Boolean   @default(false)
+  categories  String[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  orders      Order[]
+  tickets     Ticket[]
+  ticketTypes TicketType[]
+}
+
+enum EventStatus {
+  DRAFT
+  PUBLISHED
+  CANCELLED
+  COMPLETED
+}
+
+model Order {
+  id            String    @id @default(uuid())
+  user          User      @relation(fields: [userId], references: [id])
+  userId        String
+  event         Event     @relation(fields: [eventId], references: [id])
+  eventId       String
+  total         Float
+  status        OrderStatus @default(PENDING)
+  paymentMethod String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  tickets       Ticket[]
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
+model Ticket {
+  id          String    @id @default(uuid())
+  order       Order     @relation(fields: [orderId], references: [id])
+  orderId     String
+  event       Event     @relation(fields: [eventId], references: [id])
+  eventId     String
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String
+  ticketType  TicketType @relation(fields: [ticketTypeId], references: [id])
+  ticketTypeId String
+  status      TicketStatus @default(VALID)
+  qrCode      String    @unique
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model TicketType {
+  id          String    @id @default(uuid())
+  event       Event     @relation(fields: [eventId], references: [id])
+  eventId     String
+  name        String
+  description String
+  price       Float
+  quantity    Int
+  available   Int
+  maxPerOrder Int
+  tickets     Ticket[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+enum TicketStatus {
+  VALID
+  USED
+  CANCELLED
+}
+
+model Notification {
+  id        String    @id @default(uuid())
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String
+  title     String
+  message   String
+  type      NotificationType
+  read      Boolean   @default(false)
+  metadata  Json?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+enum NotificationType {
+  EVENT_REMINDER
+  TICKET_PURCHASED
+  PRICE_CHANGE
+  EVENT_CANCELLED
+  EVENT_UPDATED
+  ORDER_CREATED
+  ORDER_COMPLETED
+  ORDER_CANCELLED
+  PAYMENT_SUCCESS
+  PAYMENT_FAILED
+  PAYMENT_PENDING
+}
+
+model NotificationPreference {
+  id        String    @id @default(uuid())
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String    @unique
+  email     Boolean   @default(true)
+  push      Boolean   @default(false)
+  types     NotificationType[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model PushToken {
+  id        String    @id @default(uuid())
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String
+  token     String    @unique
+  device    String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model SecurityLog {
+  id        String    @id @default(uuid())
+  action    String
+  ip        String
+  userId    String?
+  details   String
+  severity  SecuritySeverity
+  createdAt DateTime  @default(now())
+}
+
+enum SecuritySeverity {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model BlockedIP {
+  id        String    @id @default(uuid())
+  ip        String    @unique
+  reason    String
+  expiresAt DateTime
+  createdAt DateTime  @default(now())
+}
+
+model SearchLog {
+  id        String    @id @default(uuid())
+  query     String
+  userId    String?
+  createdAt DateTime  @default(now())
+}
+
+model PaymentLog {
+  id            String    @id @default(uuid())
+  orderId       String
+  userId        String
+  amount        Float
+  currency      String
+  method        String
+  status        String
+  error         String?
+  transactionId String?
+  details       Json?
+  createdAt     DateTime  @default(now())
+}
