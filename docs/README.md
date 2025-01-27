@@ -19,12 +19,12 @@ AfriTix is a comprehensive event ticketing platform designed specifically for Af
 
 ### System Architecture
 - Frontend: React SPA with TypeScript
-- Backend: NestJS REST API
-- Database: PostgreSQL with Prisma ORM
-- Real-time: WebSocket with Socket.io
-- Caching: Redis
-- Monitoring: Prometheus & Grafana
-- Logging: Winston
+- Backend: Supabase
+- Database: PostgreSQL with Supabase
+- Real-time: Supabase Realtime
+- Authentication: Supabase Auth
+- Storage: Supabase Storage
+- Hosting: Netlify
 
 ### Key Components
 - Authentication Service
@@ -59,15 +59,15 @@ AfriTix is a comprehensive event ticketing platform designed specifically for Af
 - Analytics Dashboard
 - Content Management
 - Security Monitoring
-- System Health Monitoring
+- Support Chat System
 
 ### Security Features
-- JWT Authentication
+- Supabase Authentication
+- Row Level Security (RLS)
 - Role-Based Access Control
-- Rate Limiting
 - Input Validation
 - XSS Protection
-- CSRF Protection
+- Rate Limiting
 
 ## Tech Stack
 
@@ -75,7 +75,7 @@ AfriTix is a comprehensive event ticketing platform designed specifically for Af
 - React 18
 - TypeScript
 - TailwindCSS
-- React Query
+- Supabase Client
 - Socket.io Client
 - React Router
 - Lucide Icons
@@ -84,107 +84,89 @@ AfriTix is a comprehensive event ticketing platform designed specifically for Af
 - Testing Library
 
 ### Backend
-- NestJS
-- TypeScript
-- Prisma ORM
+- Supabase
 - PostgreSQL
-- Redis
-- Socket.io
-- Winston Logger
-- Prometheus
-- Jest
+- Row Level Security
+- Supabase Functions
+- Supabase Realtime
+- Supabase Storage
+- Database Triggers
+- Supabase Auth
 
 ### DevOps
-- Docker
+- Netlify
+- Supabase CLI
 - GitHub Actions
-- Prometheus
-- Grafana
-- Redis
-- Nginx
+- TypeScript
+- ESLint
+- Prettier
 
 ## Getting Started
 
 ### Prerequisites
 - Node.js 18+
-- PostgreSQL 14+
-- Redis 6+
 - npm or yarn
+- Supabase account
 
 ### Installation
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/afritix.git
-cd afritix
+git clone https://github.com/Cresus9/Ticket.git
+cd Ticket
 ```
 
 2. Install dependencies:
 ```bash
-# Install frontend dependencies
-cd frontend
-npm install
-
-# Install backend dependencies
-cd ../backend
 npm install
 ```
 
 3. Configure environment variables:
 ```bash
 # Frontend (.env)
-VITE_API_URL=http://localhost:3000/api
-
-# Backend (.env)
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/afritix?schema=public"
-JWT_SECRET="your-super-secret-key"
-JWT_EXPIRES_IN="7d"
-PORT=3000
-NODE_ENV="development"
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_key
+VITE_API_URL=http://localhost:3000
+VITE_ENVIRONMENT=development
 ```
 
-4. Start development servers:
+4. Start development server:
 ```bash
-# Start frontend
-cd frontend
 npm run dev
-
-# Start backend
-cd backend
-npm run start:dev
 ```
 
 ## API Documentation
 
 ### Authentication
-- POST /api/auth/login
-- POST /api/auth/register
-- POST /api/auth/refresh
-- GET /api/auth/profile
+- POST /auth/login
+- POST /auth/register
+- POST /auth/refresh
+- GET /auth/profile
 
 ### Events
-- GET /api/events
-- POST /api/events
-- GET /api/events/:id
-- PUT /api/events/:id
-- DELETE /api/events/:id
-- GET /api/events/search
+- GET /events
+- POST /events
+- GET /events/:id
+- PUT /events/:id
+- DELETE /events/:id
+- GET /events/search
 
 ### Tickets
-- POST /api/tickets
-- GET /api/tickets/:id
-- POST /api/tickets/:id/validate
-- GET /api/tickets/user
+- POST /tickets
+- GET /tickets/:id
+- POST /tickets/:id/validate
+- GET /tickets/user
 
 ### Users
-- GET /api/users
-- GET /api/users/:id
-- PUT /api/users/:id
-- DELETE /api/users/:id
+- GET /users
+- GET /users/:id
+- PUT /users/:id
+- DELETE /users/:id
 
 ### Notifications
-- GET /api/notifications
-- PUT /api/notifications/:id/read
-- POST /api/notifications/preferences
+- GET /notifications
+- PUT /notifications/:id/read
+- POST /notifications/preferences
 
 ## Frontend Documentation
 
@@ -222,53 +204,53 @@ npm run start:dev
 
 ## Backend Documentation
 
-### Core Modules
-1. AuthModule
-   - JWT Authentication
+### Core Features
+1. Authentication
+   - Supabase Auth
+   - JWT Tokens
    - Role-Based Access
-   - Password Hashing
-   - Token Management
+   - Social Auth (optional)
 
-2. EventsModule
-   - Event CRUD
-   - Search & Filtering
-   - Image Management
-   - Category Management
+2. Database
+   - PostgreSQL Tables
+   - Row Level Security
+   - Real-time Subscriptions
+   - Database Functions
 
-3. TicketsModule
-   - Ticket Generation
-   - Validation
-   - QR Code Management
-   - Availability Tracking
+3. Storage
+   - File Upload
+   - Image Processing
+   - Access Control
+   - CDN Integration
 
-4. NotificationsModule
-   - Push Notifications
-   - Email Notifications
-   - Real-time Updates
-   - Preferences Management
+4. Security
+   - RLS Policies
+   - Input Validation
+   - Rate Limiting
+   - SQL Injection Prevention
 
 ### Database Schema
-Detailed database schema documentation available in `prisma/schema.prisma`
+Detailed database schema documentation available in `supabase/migrations`
 
-### Caching Strategy
-- Event Data: 1 hour TTL
-- User Data: 30 minutes TTL
-- Search Results: 5 minutes TTL
-- Static Content: 24 hours TTL
+### Security Policies
+- Row Level Security (RLS) policies
+- Role-based access control
+- Data validation
+- Input sanitization
 
 ## Security
 
 ### Authentication
-- JWT-based authentication
-- Refresh token rotation
-- Secure cookie handling
-- Password hashing with bcrypt
+- Supabase Auth
+- JWT tokens
+- Secure session management
+- Password hashing
 
 ### Authorization
-- Role-based access control
+- Row Level Security
+- Role-based access
 - Resource-based permissions
 - API endpoint protection
-- WebSocket authentication
 
 ### Data Protection
 - Input validation
@@ -308,10 +290,10 @@ Detailed database schema documentation available in `prisma/schema.prisma`
 - E2E Tests
 
 ### Backend Testing
-- Unit Tests
+- Database Tests
+- Policy Tests
+- Function Tests
 - Integration Tests
-- E2E Tests
-- Load Tests
 
 ### Test Coverage
 - Frontend: >80%
